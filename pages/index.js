@@ -102,7 +102,7 @@ export default function Home({ imgUrl: defaultImgUrl }) {
           </button>
         </div>
         <button id="button5" onClick={handleClick}>
-          Play Again
+          Lets Play
         </button>
       </div>
       <footer id="footer"><h4>Terms & Conditions....Have fun!</h4></footer> 
