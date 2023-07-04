@@ -12,6 +12,11 @@ export default function Home({ imgUrl: defaultImgUrl }) {
     breedName4: "D",
   });
 
+  const [answeredQuestions, setAnsweredQuestions] = useState(0);
+  const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [showScore, setShowScore] = useState(false);
+
+
   // returns the breedname from the url
   function displayBreedName(url) {
     const regex = /\/breeds\/([a-zA-Z-]+)/;
@@ -24,9 +29,12 @@ export default function Home({ imgUrl: defaultImgUrl }) {
   const handleButtonClick = (breedName, event) => {
     if (breedName === displayBreedName(dogData.imgUrl)) {
       event.target.style.backgroundColor = "green";
+      setCorrectAnswers((prevState) => prevState + 1);
     } else {
       event.target.style.backgroundColor = "red";
     }
+    setAnsweredQuestions((prevState) => prevState + 1);
+    handleClick(); 
   };
 
   //allows renders to update
@@ -40,16 +48,24 @@ export default function Home({ imgUrl: defaultImgUrl }) {
     }
   }, []);
 
-  //updates dog breeds and resets button background colour
+
   const handleClick = async () => {
-    const { imgUrl, breedName1, breedName2, breedName3, breedName4 } =
-      await doggypic();
-    setDogData({ imgUrl, breedName1, breedName2, breedName3, breedName4 });
-    const buttons = document.querySelectorAll("button");
-    buttons.forEach((button) => {
-      button.style.backgroundColor = "";
-    });
+    if (answeredQuestions >= 10) {
+      setShowScore(true);
+      alert(`Your score is ${correctAnswers} out of 10`);
+      setAnsweredQuestions(0);
+      setCorrectAnswers(0);
+    } else {
+      const { imgUrl, breedName1, breedName2, breedName3, breedName4 } =
+        await doggypic();
+      setDogData({ imgUrl, breedName1, breedName2, breedName3, breedName4 });
+      const buttons = document.querySelectorAll("button");
+      buttons.forEach((button) => {
+        button.style.backgroundColor = "";
+      });
+    }
   };
+
 
   return (
     <>
@@ -66,8 +82,15 @@ export default function Home({ imgUrl: defaultImgUrl }) {
       </nav>
 
       <div id="landingpage">
-        <h1>Hello Dog Nerds!</h1>
-
+        <h1 style={{color:'white'}}>Hello Dog Nerds!</h1>
+        {showScore && (
+          <div id="score">
+            Your score is {correctAnswers} out of 10
+          </div>
+        )}
+        <button id="button5" onClick={handleClick}>
+          Fetch   
+        </button>
         <div id="imagecontainer">
           <img id="dogpic" src={dogData.imgUrl} alt={""} />
         </div>
@@ -101,9 +124,6 @@ export default function Home({ imgUrl: defaultImgUrl }) {
             {dogData.breedName4}
           </button>
         </div>
-        <button id="button5" onClick={handleClick}>
-          Lets Play
-        </button>
       </div>
       <footer id="footer"><h4>Terms & Conditions....Have fun!</h4></footer> 
     </>
